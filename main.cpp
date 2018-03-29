@@ -1,8 +1,7 @@
 #include <iostream>
+#include <stack>
+#include<vector>
 using namespace std;
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-
-    cout << "hello again";
     return 0;
 }

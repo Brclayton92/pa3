@@ -3,4 +3,4 @@ project(pa3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(pa3 main.cpp)
+add_executable(pa3 main.cpp pa3.h)
