@@ -55,6 +55,16 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
  * Stack methods end
  */
 
+/*
+ * main methods begin
+ */
+
+
+
+/*
+ * main methods end
+ */
+
 int main() {
     Stack callStack;
     /*
