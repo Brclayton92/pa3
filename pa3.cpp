@@ -34,15 +34,17 @@ void Stack::push(string _data) {
     size++;
 }
 
-string Stack::pop() {
+//returns data stored in tail then deletes tail it from the Stack
+string Stack::pop() { //FIXME: crashes program when called with no nodes in the stack
     node *temp = head;
-    node *tempTail = tail;
+    string data = tail->data;
 
     for (int i = 0; i < size; i++) {
-        if (temp->next == tail) {
+        if (temp->next == tail || head == tail) {
+            delete tail;
             tail = temp;
             size--;
-            return tempTail->data;
+            return data;
         }
 
         temp = temp->next;
@@ -55,7 +57,7 @@ string Stack::pop() {
 
 int main() {
     Stack callStack;
-
+    /*
     callStack.push("1");
     callStack.push("2");
     callStack.push("3");
@@ -66,5 +68,10 @@ int main() {
     cout << callStack.pop();
     cout << callStack.pop();
     cout << callStack.pop();
+    callStack.push("6");
+    callStack.push("7");
+    cout << callStack.pop();
+    cout << callStack.pop();
+    */
     return 0;
 }
