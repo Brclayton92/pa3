@@ -1,5 +1,8 @@
 #include <iostream>
 #include "pa3.h"
+#include <fstream>
+#include <vector>
+
 using namespace std;
 
 /*
@@ -63,15 +66,23 @@ int Stack::getSize() {
  * main methods begin
  */
 
+
 int depthOfNestedLoops(Stack _callStack) {
     int _depthOfNestedLoop = 0;
     int _deepestNestedLoop = 0;
     string tempString;
+    int endCount = 0;
+    int beginCount = 0;
 
     while (_callStack.getSize() > 0) {
         tempString = _callStack.pop();
         if (tempString.find("END") != -1) {
-            _depthOfNestedLoop++;
+            endCount++;
+            _deepestNestedLoop++;
+        }
+
+        if (tempString.find("BEGIN") != -1) {
+            beginCount++;
         }
         else {
             if (_depthOfNestedLoop > _deepestNestedLoop) {
@@ -79,6 +90,40 @@ int depthOfNestedLoops(Stack _callStack) {
             }
 
             _depthOfNestedLoop = 0;
+        }
+    }
+
+    if (beginCount == endCount) {
+        return _deepestNestedLoop;
+    }
+
+    else {
+        _deepestNestedLoop -= (abs(beginCount - endCount));
+        return _deepestNestedLoop;
+    }
+}
+
+string keywordsMethod(Stack _callStack) {
+    string tempString;
+    string syntaxString = "";
+    int substringStart = -1;
+    int subStringSize = 0;
+    while (_callStack.getSize() > 0) {
+        tempString = _callStack.pop();
+        for (int i = 0; i < tempString.size(); i++) {
+            if ((int) tempString.at(i) > 64){ // tests if tempstring.at(i) is within askii range of capitol letters
+                if ((int) tempString.at(i) < 91){ // tests if tempstring.at(i) is within askii range of capitol letters
+                    if (substringStart == -1){
+                        substringStart = i;
+                    }
+                    subStringSize++;
+                }
+            }
+
+            else {
+                syntaxString = tempString.substr(substringStart, subStringSize);
+                return syntaxString;
+            }
         }
     }
 }
@@ -89,23 +134,43 @@ int depthOfNestedLoops(Stack _callStack) {
  */
 
 int main() {
-    int depthOfNestedLoops = 0;
     Stack callStack;
+    string str;
+    vector <string> keywords;
+    vector <string> identifiers;
+    vector <string> constants;
+    vector <string> operators;
+    vector <string> delimiters;
+    vector <string> syntaxErrors;
+
     /*
-    callStack.push("1");
-    callStack.push("2");
-    callStack.push("3");
-    callStack.push("4");
-    callStack.push("5");
-    cout << callStack.pop();
-    cout << callStack.pop();
-    cout << callStack.pop();
-    cout << callStack.pop();
-    cout << callStack.pop();
-    callStack.push("6");
-    callStack.push("7");
-    cout << callStack.pop();
-    cout << callStack.pop();
-    */
+     * write file to callStack
+     */
+
+    ifstream infile("code.txt", ios::in); // test.text must be located in "C:\Users\Brock\CLionProjects\projectName\cmake-build-debug"
+
+    if (infile.is_open()){
+        while (getline(infile, str)) { // returns null when it reaches an empty line in the file
+            callStack.push(str); //write file to a vector of strings
+        }
+        infile.close();
+    }
+
+    else {
+        cout << "no input file available";
+    }
+
+    /*
+     * end writing file to callStack
+     */
+
+    cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
+
+    syntaxErrors.push_back(keywordsMethod(callStack));
+
+    for (int i; i < syntaxErrors.size(); i++){
+        cout << syntaxErrors[i];
+    }
+
     return 0;
 }

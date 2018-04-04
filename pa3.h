@@ -25,6 +25,7 @@ class Stack {
         int getSize();
 };
 
-int depthOfNestedLoops();
+int depthOfNestedLoops(Stack _callStack);
+string keywordsMethod(Stack _callStack);
 
 #endif //PA3_PA3_H
