@@ -22,6 +22,9 @@ class Stack {
         Stack();
         void push(string _data);
         string pop();
+        int getSize();
 };
+
+int depthOfNestedLoops();
 
 #endif //PA3_PA3_H

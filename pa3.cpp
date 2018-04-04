@@ -51,6 +51,10 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
     }
 }
 
+int Stack::getSize() {
+    return size;
+}
+
 /*
  * Stack methods end
  */
@@ -59,6 +63,25 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
  * main methods begin
  */
 
+int depthOfNestedLoops(Stack _callStack) {
+    int _depthOfNestedLoop = 0;
+    int _deepestNestedLoop = 0;
+    string tempString;
+
+    while (_callStack.getSize() > 0) {
+        tempString = _callStack.pop();
+        if (tempString.find("END") != -1) {
+            _depthOfNestedLoop++;
+        }
+        else {
+            if (_depthOfNestedLoop > _deepestNestedLoop) {
+                _deepestNestedLoop = _depthOfNestedLoop;
+            }
+
+            _depthOfNestedLoop = 0;
+        }
+    }
+}
 
 
 /*
@@ -66,6 +89,7 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
  */
 
 int main() {
+    int depthOfNestedLoops = 0;
     Stack callStack;
     /*
     callStack.push("1");
