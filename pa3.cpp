@@ -5,6 +5,14 @@
 
 using namespace std;
 
+vector <string> tokens;
+vector <string> keywords;
+vector <string> identifiers;
+vector <string> constants;
+vector <string> operators;
+vector <string> delimiters;
+vector <string> syntaxErrors;
+
 /*
  * Stack methods start
  */
@@ -134,12 +142,43 @@ int Stack::getSize() {
  */
 
 void findTokens(string code) {
+    string currWord = "";
+    for (int i = 0; i< code.size(); i++){
+        if (code.at(i) == '(' || code.at(i) == ')')
 
+        if (isLowerCaseLetter(code.at(i))) {
+            currWord = code.at(i);
+            tokens.push_back(currWord);
+            currWord = "";
+
+        }
+
+        else if (isWhiteSpace(code.at(i))) {
+            if (currWord != "")
+            tokens.push_back(currWord);
+            currWord = "";
+        }
+
+        else {
+            currWord += code.at(i);
+        }
+    }
 }
 
 bool isWhiteSpace(char a) {
     const int asciiVal = (int) a;
     if (asciiVal == 32) {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+bool isLowerCaseLetter(char b) {
+    const int asciiVal = (int) b;
+    if ((asciiVal > 96) && (asciiVal < 123)){
         return true;
     }
 
@@ -158,12 +197,7 @@ int main() {
     string str;
     string code = "";
     vector <string> codeVector;
-    vector <string> keywords;
-    vector <string> identifiers;
-    vector <string> constants;
-    vector <string> operators;
-    vector <string> delimiters;
-    vector <string> syntaxErrors;
+
 
     /*
      * write file to tokens vector
@@ -192,9 +226,13 @@ int main() {
 
     //cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
 
-    cout << code;
+    findTokens(code);
 
-   // findTokens(code);
+    for (int i = 0; i < tokens.size(); i++){
+        cout << tokens[i] << "\n";
+    }
+
+
     return 0;
 }
 
