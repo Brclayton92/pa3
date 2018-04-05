@@ -214,10 +214,34 @@ bool isLowerCaseLetter(char b) {
     }
 }
 
+bool isOperator(char c) {
+    if (c == '+'){
+        return true;
+    }
+
+    if (c == '-') {
+        return true;
+    }
+
+    if (c == '*') {
+        return true;
+    }
+
+    if (c == '/'){
+        return true;
+    }
+
+    if (c == '='){
+        return true;
+    }
+
+    return false;
+}
+
 void compiler(int i) {
 
     /*
-     * FOR keyword branch begin
+     * FOR keyword branch start
      */
     if (tokens[i] == "FOR") {
         keywords.push_back(tokens[i]);
@@ -297,13 +321,14 @@ void compiler(int i) {
      */
 
     /*
-     * BEGIN keyword
+     * Operators branch start
      */
-
-    if (tokens[i] == "BEGIN") {
+    if (isOperator(tokens[i].at(0))) {
 
     }
 }
+
+
 
 
 /*
