@@ -147,7 +147,7 @@ void findTokens(string code) {
     for (int i = 0; i< code.size(); i++){
         if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
                || code.at(i) == ',' || code.at(i) == ';' ) {
-            //lastWord = currWord.substr(1, currWord.size() - 1);
+            lastWord = currWord;
             currWord = code.at(i);
             tokens.push_back(lastWord);
             if (code.at(i + 1) != '+') {
