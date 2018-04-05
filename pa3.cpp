@@ -214,6 +214,81 @@ bool isLowerCaseLetter(char b) {
     }
 }
 
+void compiler(int i) {
+    if (tokens[i] == "FOR") {
+        if (tokens[i + 1] != "("){
+            cout << "inside (";
+            syntaxErrors.push_back(tokens[i+1]);
+        }
+
+        if (tokens[i + 2] == "(") {
+            if (isLowerCaseLetter(tokens[i + 3].at(0))) {
+                identifiers.push_back(tokens[i + 3]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 3]);
+            }
+        }
+
+        if (isLowerCaseLetter(tokens[i + 3].at(0))) {
+            if (tokens[i + 4] == ","){
+                delimiters.push_back(tokens[i + 4]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 4]);
+            }
+        }
+
+        if (tokens[i + 4] == ",") {
+            if (isdigit(tokens[i + 5].at(0))) {
+                constants.push_back(tokens[i + 5]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 5]);
+            }
+        }
+
+        if (isdigit(tokens[i + 5].at(0))){
+            if (tokens[i + 6] == ",") {
+                delimiters.push_back(tokens[i + 6]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 6]);
+            }
+        }
+
+        if (tokens[i + 6] == ",") {
+            if (tokens[i + 7] == "++"){
+                operators.push_back(tokens[i + 7]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 7]);
+            }
+        }
+
+        if (tokens[i + 7] == "++") {
+            if (tokens[i + 8] != ")") {
+                syntaxErrors.push_back(tokens[i + 8]);
+            }
+        }
+
+        if (tokens[i + 8] == ")") {
+            if (tokens[i + 9] == "BEGIN"){
+                keywords.push_back(tokens[i + 9]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 9]);
+            }
+        }
+    }
+}
+
 
 /*
  * main methods end
@@ -251,11 +326,43 @@ int main() {
         code += codeVector[i];
     }
 
-    //cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
-
     findTokens(code);
 
-    for (int i = 0; i < tokens.size(); i++){
+    for (int i = 0; i < tokens.size(); i++) {
+        compiler(i);
+    }
+
+    cout << "Keywords: ";
+    for (int i = 0; i < keywords.size(); i++){
+        cout << keywords[i] << " ";
+    }
+
+    cout << "\n " << "Identifier: ";
+    for (int i = 0; i < identifiers.size(); i++){
+        cout << identifiers[i] << " ";
+    }
+
+    cout << "\n " << "Constant: ";
+    for (int i = 0; i < constants.size(); i++){
+        cout << constants[i] << " ";
+    }
+
+    cout << "\n " << "Operators: ";
+    for (int i = 0; i < operators.size(); i++){
+        cout << operators[i] << " ";
+    }
+
+    cout << "\n " << "Delimiter: ";
+    for (int i = 0; i < delimiters.size(); i++){
+        cout << delimiters[i] << " ";
+    }
+
+    cout << "\n " << "Syntax Error(s): ";
+    for (int i = 0; i < syntaxErrors.size(); i++){
+        cout << syntaxErrors[i] << " ";
+    }
+
+    for (int i = 0; i < tokens.size(); i++) {
         cout << tokens[i] << "\n";
     }
 
