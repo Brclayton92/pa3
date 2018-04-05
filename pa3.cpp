@@ -62,11 +62,14 @@ int Stack::getSize() {
  * Stack methods end
  */
 
+
+
+
 /*
  * main methods begin
  */
 
-
+//adds a frame to the stack for every nested loop found
 /*int depthOfNestedLoops(Stack _callStack) {
     int _depthOfNestedLoop = 0;
     int _deepestNestedLoop = 0;
@@ -103,8 +106,8 @@ int Stack::getSize() {
     }
 }*/
 
-
-void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
+// checks looks for tokens composed of capitol letters
+/* void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
     string tempString;
     string syntaxString = "";
     int substringStart = -1;
@@ -128,6 +131,22 @@ void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
         }
     }
 }
+ */
+
+void findTokens(string code) {
+
+}
+
+bool isWhiteSpace(char a) {
+    const int asciiVal = (int) a;
+    if (asciiVal == 32) {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
 
 
 /*
@@ -137,6 +156,8 @@ void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
 int main() {
     Stack callStack;
     string str;
+    string code = "";
+    vector <string> codeVector;
     vector <string> keywords;
     vector <string> identifiers;
     vector <string> constants;
@@ -145,14 +166,14 @@ int main() {
     vector <string> syntaxErrors;
 
     /*
-     * write file to callStack
+     * write file to tokens vector
      */
 
     ifstream infile("code.txt", ios::in); // test.text must be located in "C:\Users\Brock\CLionProjects\projectName\cmake-build-debug"
 
     if (infile.is_open()){
         while (getline(infile, str)) { // returns null when it reaches an empty line in the file
-            callStack.push(str); //write file to a vector of strings
+            codeVector.push_back(str + "\n"); //write file to a vector of strings
         }
         infile.close();
     }
@@ -162,16 +183,19 @@ int main() {
     }
 
     /*
-     * end writing file to callStack
+     * end writing file to tokens vector
      */
 
-    cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
-
-    keywordsMethod(callStack, syntaxErrors);
-
-    for (int i; i < syntaxErrors.size(); i++){
-        cout << syntaxErrors[i];
+    for (int i = 0; i < codeVector.size(); i++){
+        code += codeVector[i];
     }
 
+    //cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
+
+    cout << code;
+
+   // findTokens(code);
     return 0;
 }
+
+

@@ -27,7 +27,9 @@ class Stack {
 };
 
 int depthOfNestedLoops(Stack _callStack);
-void keywordsMethod(Stack _callStack, vector <string> *syntaxErrors);
+//void keywordsMethod(Stack _callStack, vector <string> *syntaxErrors);
+void findTokens(string code);
+bool isWhiteSpace(char a);
 
 
 #endif //PA3_PA3_H
