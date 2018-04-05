@@ -142,14 +142,28 @@ int Stack::getSize() {
  */
 
 void findTokens(string code) {
+    string lastWord = "";
     string currWord = "";
     for (int i = 0; i< code.size(); i++){
-        if (code.at(i) == '(' || code.at(i) == ')')
-
-        if (isLowerCaseLetter(code.at(i))) {
+        if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
+               || code.at(i) == ',' || code.at(i) == ';' ) {
+            //lastWord = currWord.substr(1, currWord.size() - 1);
             currWord = code.at(i);
-            tokens.push_back(currWord);
+            tokens.push_back(lastWord);
+            if (code.at(i + 1) != '+') {
+                tokens.push_back(currWord);
+            }
+
+            else {
+                tokens.push_back("++");
+                i++;
+            }
             currWord = "";
+            lastWord = "";
+        }
+
+        else if (isLowerCaseLetter(code.at(i))) {
+            currWord += code.at(i);
 
         }
 
