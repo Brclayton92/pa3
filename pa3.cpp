@@ -149,9 +149,13 @@ void findTokens(string code) {
                || code.at(i) == ',' || code.at(i) == ';' ) {
             lastWord = currWord;
             currWord = code.at(i);
-            tokens.push_back(lastWord);
+            if (lastWord != "") {
+                tokens.push_back(lastWord);
+            }
             if (code.at(i + 1) != '+') {
-                tokens.push_back(currWord);
+                if (currWord != "") {
+                    tokens.push_back(currWord);
+                }
             }
 
             else {
@@ -168,8 +172,9 @@ void findTokens(string code) {
         }
 
         else if (isWhiteSpace(code.at(i))) {
-            if (currWord != "")
-            tokens.push_back(currWord);
+            if (currWord != "") {
+                tokens.push_back(currWord);
+            }
             currWord = "";
         }
 
