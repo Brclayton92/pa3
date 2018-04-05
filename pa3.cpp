@@ -5,7 +5,7 @@
 
 using namespace std;
 
-//vector <string> tokens;
+vector <string> tokens;
 vector <string> keywords;
 vector <string> identifiers;
 vector <string> constants;
@@ -144,7 +144,7 @@ int Stack::getSize() {
 void findTokens(string code) {
     string lastWord = "";
     string currWord = "";
-    vector <string> tokens;
+    //vector <string> tokens; //FIXME extra vector created for debugging because debugger can't track global variables.
     for (int i = 0; i< code.size(); i++){
         if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
                || code.at(i) == ',' || code.at(i) == ';' ) {
@@ -190,9 +190,6 @@ void findTokens(string code) {
             currWord += code.at(i);
         }
     }
-    for (int i = 0; i < tokens.size(); i++){
-           cout << tokens[i] << "\n";
-        }
 }
 
 bool isWhiteSpace(char a) {
@@ -258,12 +255,9 @@ int main() {
 
     findTokens(code);
 
-    //for (int i = 0; i < tokens.size(); i++){
-     //   cout << tokens[i] << "\n";
-    //}
-
-    //cout << tokens.size();
-
+    for (int i = 0; i < tokens.size(); i++){
+        cout << tokens[i] << "\n";
+    }
 
     return 0;
 }
