@@ -215,15 +215,30 @@ bool isLowerCaseLetter(char b) {
 }
 
 void compiler(int i) {
+
+    /*
+     * FOR keyword branch begin
+     */
     if (tokens[i] == "FOR") {
+        keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
             cout << "inside (";
             syntaxErrors.push_back(tokens[i+1]);
         }
 
-        if (tokens[i + 2] == "(") {
-            if (isLowerCaseLetter(tokens[i + 3].at(0))) {
-                identifiers.push_back(tokens[i + 3]);
+        if (tokens[i + 1] == "(") {
+            if (isLowerCaseLetter(tokens[i + 2].at(0))) {
+                identifiers.push_back(tokens[i + 2]);
+            }
+
+            else {
+                syntaxErrors.push_back(tokens[i + 2]);
+            }
+        }
+
+        if (isLowerCaseLetter(tokens[i + 2].at(0))) {
+            if (tokens[i + 3] == ","){
+                delimiters.push_back(tokens[i + 3]);
             }
 
             else {
@@ -231,9 +246,9 @@ void compiler(int i) {
             }
         }
 
-        if (isLowerCaseLetter(tokens[i + 3].at(0))) {
-            if (tokens[i + 4] == ","){
-                delimiters.push_back(tokens[i + 4]);
+        if (tokens[i + 3] == ",") {
+            if (isdigit(tokens[i + 4].at(0))) {
+                constants.push_back(tokens[i + 4]);
             }
 
             else {
@@ -241,9 +256,9 @@ void compiler(int i) {
             }
         }
 
-        if (tokens[i + 4] == ",") {
-            if (isdigit(tokens[i + 5].at(0))) {
-                constants.push_back(tokens[i + 5]);
+        if (isdigit(tokens[i + 4].at(0))){
+            if (tokens[i + 5] == ",") {
+                delimiters.push_back(tokens[i + 5]);
             }
 
             else {
@@ -251,9 +266,9 @@ void compiler(int i) {
             }
         }
 
-        if (isdigit(tokens[i + 5].at(0))){
-            if (tokens[i + 6] == ",") {
-                delimiters.push_back(tokens[i + 6]);
+        if (tokens[i + 5] == ",") {
+            if (tokens[i + 6] == "++"){
+                operators.push_back(tokens[i + 6]);
             }
 
             else {
@@ -261,31 +276,32 @@ void compiler(int i) {
             }
         }
 
-        if (tokens[i + 6] == ",") {
-            if (tokens[i + 7] == "++"){
-                operators.push_back(tokens[i + 7]);
-            }
-
-            else {
+        if (tokens[i + 6] == "++") {
+            if (tokens[i + 7] != ")") {
                 syntaxErrors.push_back(tokens[i + 7]);
             }
         }
 
-        if (tokens[i + 7] == "++") {
-            if (tokens[i + 8] != ")") {
-                syntaxErrors.push_back(tokens[i + 8]);
-            }
-        }
-
-        if (tokens[i + 8] == ")") {
-            if (tokens[i + 9] == "BEGIN"){
-                keywords.push_back(tokens[i + 9]);
+        if (tokens[i + 7] == ")") {
+            if (tokens[i + 8] == "BEGIN"){
+                keywords.push_back(tokens[i + 8]);
             }
 
             else {
-                syntaxErrors.push_back(tokens[i + 9]);
+                syntaxErrors.push_back(tokens[i + 8]);
             }
         }
+    }
+    /*
+     * FOR keyword branch end
+     */
+
+    /*
+     * BEGIN keyword
+     */
+
+    if (tokens[i] == "BEGIN") {
+
     }
 }
 
@@ -362,6 +378,7 @@ int main() {
         cout << syntaxErrors[i] << " ";
     }
 
+    cout << "\n";
     for (int i = 0; i < tokens.size(); i++) {
         cout << tokens[i] << "\n";
     }
