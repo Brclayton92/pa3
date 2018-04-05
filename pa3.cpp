@@ -5,7 +5,7 @@
 
 using namespace std;
 
-vector <string> tokens;
+//vector <string> tokens;
 vector <string> keywords;
 vector <string> identifiers;
 vector <string> constants;
@@ -144,6 +144,7 @@ int Stack::getSize() {
 void findTokens(string code) {
     string lastWord = "";
     string currWord = "";
+    vector <string> tokens;
     for (int i = 0; i< code.size(); i++){
         if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
                || code.at(i) == ',' || code.at(i) == ';' ) {
@@ -171,6 +172,13 @@ void findTokens(string code) {
 
         }
 
+        else if (code.at(i) == '\n') {
+            if (currWord != "") {
+                tokens.push_back(currWord);
+            }
+            currWord = "";
+        }
+
         else if (isWhiteSpace(code.at(i))) {
             if (currWord != "") {
                 tokens.push_back(currWord);
@@ -182,6 +190,9 @@ void findTokens(string code) {
             currWord += code.at(i);
         }
     }
+    for (int i = 0; i < tokens.size(); i++){
+           cout << tokens[i] << "\n";
+        }
 }
 
 bool isWhiteSpace(char a) {
@@ -247,9 +258,11 @@ int main() {
 
     findTokens(code);
 
-    for (int i = 0; i < tokens.size(); i++){
-        cout << tokens[i] << "\n";
-    }
+    //for (int i = 0; i < tokens.size(); i++){
+     //   cout << tokens[i] << "\n";
+    //}
+
+    //cout << tokens.size();
 
 
     return 0;
