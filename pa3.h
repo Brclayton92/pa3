@@ -6,6 +6,7 @@
 
 using namespace std;
 #include "string"
+#include <vector>
 
 struct node {
     string data;
@@ -26,6 +27,7 @@ class Stack {
 };
 
 int depthOfNestedLoops(Stack _callStack);
-string keywordsMethod(Stack _callStack);
+void keywordsMethod(Stack _callStack, vector <string> *syntaxErrors);
+
 
 #endif //PA3_PA3_H

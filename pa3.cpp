@@ -67,7 +67,7 @@ int Stack::getSize() {
  */
 
 
-int depthOfNestedLoops(Stack _callStack) {
+/*int depthOfNestedLoops(Stack _callStack) {
     int _depthOfNestedLoop = 0;
     int _deepestNestedLoop = 0;
     string tempString;
@@ -101,9 +101,10 @@ int depthOfNestedLoops(Stack _callStack) {
         _deepestNestedLoop -= (abs(beginCount - endCount));
         return _deepestNestedLoop;
     }
-}
+}*/
 
-string keywordsMethod(Stack _callStack) {
+
+void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
     string tempString;
     string syntaxString = "";
     int substringStart = -1;
@@ -122,7 +123,7 @@ string keywordsMethod(Stack _callStack) {
 
             else {
                 syntaxString = tempString.substr(substringStart, subStringSize);
-                return syntaxString;
+                syntaxErrors->push_back(syntaxS
             }
         }
     }
@@ -166,7 +167,7 @@ int main() {
 
     cout << "The depth of nested loop(s) is " << depthOfNestedLoops(callStack);
 
-    syntaxErrors.push_back(keywordsMethod(callStack));
+    keywordsMethod(callStack, syntaxErrors);
 
     for (int i; i < syntaxErrors.size(); i++){
         cout << syntaxErrors[i];
