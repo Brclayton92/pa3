@@ -388,12 +388,14 @@ int findDepthOfNestedLoops() {
     int loopCounter = 0;
     int numLoops = 0;
     bool countBegins = false;
+    const int NUM_STACK_ELEMENTS = callStack.getSize();
+    string tempCallStack[NUM_STACK_ELEMENTS];
 
-    while(callStack.getSize() > 0) {
-
-        cout << "loopCounter" << endl;//FIXME delete before submission
-
-        if (callStack.pop() == "END") {
+    for (int i = 0; i < NUM_STACK_ELEMENTS; i++){
+        tempCallStack[i] = callStack.pop();
+    }
+    for (int i = 0; i < NUM_STACK_ELEMENTS; i++) {
+        if (tempCallStack[i] == "END") {
             countBegins = true;
             if (loopCounter > numLoops) {
                 numLoops = loopCounter;
@@ -401,7 +403,7 @@ int findDepthOfNestedLoops() {
             loopCounter = 0;
         }
 
-        if (callStack.pop() == "BEGIN"){
+        if (tempCallStack[i] == "BEGIN"){
             if (countBegins){
                 loopCounter++;
             }
@@ -469,7 +471,7 @@ int main() {
 
     cout << "The depth of nested loop(s) is " << findDepthOfNestedLoops();
 
-    cout << "\n" << "Keywords: ";
+    cout << "\n" << "\n" << "Keywords: ";
     for (int i = 0; i < keywords.size(); i++){
         cout << keywords[i] << " ";
     }
@@ -506,10 +508,10 @@ int main() {
         }
     }
 
-    cout << "\n"; //FIXME delete before submission
+    /*cout << "\n"; //FIXME delete before submission
     for (int i = 0; i < tokens.size(); i++) {
         cout << tokens[i] << "\n";
-    }
+    }*/
 
     return 0;
 }
