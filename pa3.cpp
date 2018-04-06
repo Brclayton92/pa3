@@ -229,13 +229,12 @@ bool isDelimiter(char d) {
 
 //iterates through vector array of tokens adding them to appropriate categories (keywords, operaters, etc...)
 int compiler(int i) {
-    int beginOrEndCounter = 0;
+    int beginOrEndCounter = 0; //
     bool addElement = true;
     /*
-     * FOR keyword branch start
+     * FOR keyword branch start: ensures tokens following keyword FOR match expected values, if not, adds them to syntax errors vector.
      */
     if (tokens[i] == "FOR") {
-        //keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
             syntaxErrors.push_back(tokens[i+1]);
         }
