@@ -12,6 +12,7 @@ vector <string> constants;
 vector <string> operators;
 vector <string> delimiters;
 vector <string> syntaxErrors;
+Stack callStack;
 
 /*
  * Stack methods start
@@ -66,6 +67,7 @@ int Stack::getSize() {
     return size;
 }
 
+
 /*
  * Stack methods end
  */
@@ -77,69 +79,6 @@ int Stack::getSize() {
  * main methods begin
  */
 
-//adds a frame to the stack for every nested loop found
-/*int depthOfNestedLoops(Stack _callStack) {
-    int _depthOfNestedLoop = 0;
-    int _deepestNestedLoop = 0;
-    string tempString;
-    int endCount = 0;
-    int beginCount = 0;
-
-    while (_callStack.getSize() > 0) {
-        tempString = _callStack.pop();
-        if (tempString.find("END") != -1) {
-            endCount++;
-            _deepestNestedLoop++;
-        }
-
-        if (tempString.find("BEGIN") != -1) {
-            beginCount++;
-        }
-        else {
-            if (_depthOfNestedLoop > _deepestNestedLoop) {
-                _deepestNestedLoop = _depthOfNestedLoop;
-            }
-
-            _depthOfNestedLoop = 0;
-        }
-    }
-
-    if (beginCount == endCount) {
-        return _deepestNestedLoop;
-    }
-
-    else {
-        _deepestNestedLoop -= (abs(beginCount - endCount));
-        return _deepestNestedLoop;
-    }
-}*/
-
-// checks looks for tokens composed of capitol letters
-/* void keywordsMethod(Stack _callStack, vector<string> *syntaxErrors) {
-    string tempString;
-    string syntaxString = "";
-    int substringStart = -1;
-    int subStringSize = 0;
-    while (_callStack.getSize() > 0) {
-        tempString = _callStack.pop();
-        for (int i = 0; i < tempString.size(); i++) {
-            if ((int) tempString.at(i) > 64){ // tests if tempstring.at(i) is within askii range of capitol letters
-                if ((int) tempString.at(i) < 91){ // tests if tempstring.at(i) is within askii range of capitol letters
-                    if (substringStart == -1){
-                        substringStart = i;
-                    }
-                    subStringSize++;
-                }
-            }
-
-            else {
-                syntaxString = tempString.substr(substringStart, subStringSize);
-                syntaxErrors->push_back(syntaxS
-            }
-        }
-    }
-}
- */
 
 void findTokens(string code) {
     string lastWord = "";
@@ -235,7 +174,9 @@ bool isOperator(string c) {
         return true;
     }
 
-    if (c == "++")
+    if (c == "++"){
+        return true;
+    }
 
     return false;
 }
@@ -262,7 +203,8 @@ bool isDelimiter(char d) {
     return false;
 }
 
-void compiler(int i) {
+int compiler(int i) {
+    int beginOrEndCounter = 0;
     bool addElement = true;
     /*
      * FOR keyword branch start
@@ -423,6 +365,54 @@ void compiler(int i) {
     }
 
     addElement = true;
+
+    /*
+     * Checks for begin without end
+     */
+    if (tokens[i] == "BEGIN") {
+        beginOrEndCounter = 1;
+        callStack.push(tokens[i]);
+    }
+
+    if (tokens[i] == "END") {
+        beginOrEndCounter = -1;
+        callStack.push(tokens[i]);
+    }
+    /*
+     *
+     */
+    return beginOrEndCounter;
+}
+
+int findDepthOfNestedLoops() {
+    int loopCounter = 0;
+    int numLoops = 0;
+    bool countBegins = false;
+
+    while(callStack.getSize() > 0) {
+
+        cout << "loopCounter" << endl;//FIXME delete before submission
+
+        if (callStack.pop() == "END") {
+            countBegins = true;
+            if (loopCounter > numLoops) {
+                numLoops = loopCounter;
+            }
+            loopCounter = 0;
+        }
+
+        if (callStack.pop() == "BEGIN"){
+            if (countBegins){
+                loopCounter++;
+            }
+        }
+    }
+
+    if (loopCounter > numLoops) {
+        numLoops = loopCounter;
+    }
+
+    return numLoops;
 }
 
 
@@ -431,7 +421,6 @@ void compiler(int i) {
  */
 
 int main() {
-    Stack callStack;
     string str;
     string code = "";
     vector <string> codeVector;
@@ -466,10 +455,21 @@ int main() {
     findTokens(code);
 
     for (int i = 0; i < tokens.size(); i++) {
-        compiler(i);
+        beginWithoutEnd += compiler(i);
     }
 
-    cout << "Keywords: ";
+    if (beginWithoutEnd > 0) {
+        syntaxErrors.push_back("END");
+    }
+
+    /*while (callStack.getSize() > 0) //FIXME delete before submission
+    {
+        cout << "\n" << callStack.pop();
+    }*/
+
+    cout << "The depth of nested loop(s) is " << findDepthOfNestedLoops();
+
+    cout << "\n" << "Keywords: ";
     for (int i = 0; i < keywords.size(); i++){
         cout << keywords[i] << " ";
     }
@@ -494,12 +494,19 @@ int main() {
         cout << delimiters[i] << " ";
     }
 
+    cout << endl;
     cout << "\n " << "Syntax Error(s): ";
-    for (int i = 0; i < syntaxErrors.size(); i++){
-        cout << syntaxErrors[i] << " ";
+    if (syntaxErrors.empty()){
+        cout << "N/A";
     }
 
-    cout << "\n";
+    else {
+        for (int i = 0; i < syntaxErrors.size(); i++) {
+            cout << syntaxErrors[i] << " ";
+        }
+    }
+
+    cout << "\n"; //FIXME delete before submission
     for (int i = 0; i < tokens.size(); i++) {
         cout << tokens[i] << "\n";
     }

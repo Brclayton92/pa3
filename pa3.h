@@ -18,6 +18,7 @@ class Stack {
         node *head;
         node *tail;
         int size;
+        int depthOfNestedLoop;
 
     public:
         Stack();
@@ -31,10 +32,10 @@ int depthOfNestedLoops(Stack _callStack);
 void findTokens(string code);
 bool isWhiteSpace(char a);
 bool isLowerCaseLetter(char b);
-void compiler(int i);
+int compiler(int i);
 bool isOperator(string str);
 bool isKeyword(string str);
 bool isDelimiter(char d);
-
+int findDepthOfNestedLoops();
 
 #endif //PA3_PA3_H
