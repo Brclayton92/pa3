@@ -214,6 +214,7 @@ int compiler(int i) {
     if (tokens[i] == "FOR") {
         //keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
+            cout << "inside (";
             syntaxErrors.push_back(tokens[i+1]);
         }
 
