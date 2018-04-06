@@ -61,6 +61,8 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
 
         temp = temp->next;
     }
+
+    return data;
 }
 
 int Stack::getSize() {
@@ -84,9 +86,9 @@ void findTokens(string code) {
     string lastWord = "";
     string currWord = "";
     //vector <string> tokens; //FIXME extra vector created for debugging because debugger can't track global variables.
-    for (int i = 0; i< code.size(); i++){
+    for (int i = 0; i < (int)code.size(); i++){
         if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
-               || code.at(i) == ',' || code.at(i) == ';' ) {
+            || code.at(i) == ',' || code.at(i) == ';' ) {
             lastWord = currWord;
             currWord = code.at(i);
             if (lastWord != "") {
@@ -212,7 +214,6 @@ int compiler(int i) {
     if (tokens[i] == "FOR") {
         //keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
-            cout << "inside (";
             syntaxErrors.push_back(tokens[i+1]);
         }
 
@@ -228,7 +229,7 @@ int compiler(int i) {
 
         if (isLowerCaseLetter(tokens[i + 2].at(0))) {
             if (tokens[i + 3] == ","){
-               // delimiters.push_back(tokens[i + 3]);
+                // delimiters.push_back(tokens[i + 3]);
             }
 
             else {
@@ -248,7 +249,7 @@ int compiler(int i) {
 
         if (isdigit(tokens[i + 4].at(0))){
             if (tokens[i + 5] == ",") {
-               // delimiters.push_back(tokens[i + 5]);
+                // delimiters.push_back(tokens[i + 5]);
             }
 
             else {
@@ -258,7 +259,7 @@ int compiler(int i) {
 
         if (tokens[i + 5] == ",") {
             if (tokens[i + 6] == "++"){
-               // operators.push_back(tokens[i + 6]);
+                // operators.push_back(tokens[i + 6]);
             }
 
             else {
@@ -288,7 +289,7 @@ int compiler(int i) {
 
     //Adds mispelled keywords to syntax errors list
     if (isupper(tokens[i].at(0)) && !isKeyword(tokens[i])){
-        for (int j = 0; j < keywords.size(); j++){
+        for (int j = 0; j < (int) keywords.size(); j++){
             if (syntaxErrors[j] == tokens[i]) {
                 addElement = false;
             }
@@ -301,7 +302,7 @@ int compiler(int i) {
 
     //adds keywords to keywords list
     if (isKeyword(tokens[i])) {
-        for (int j = 0; j < keywords.size(); j++){
+        for (int j = 0; j < (int)keywords.size(); j++){
             if (keywords[j] == tokens[i]) {
                 addElement = false;
             }
@@ -314,7 +315,7 @@ int compiler(int i) {
 
     // adds all identifiers to list
     if (isLowerCaseLetter(tokens[i].at(0))) {
-        for (int j = 0; j < identifiers.size(); j++){
+        for (int j = 0; j < (int)identifiers.size(); j++){
             if (identifiers[j] == tokens[i]) {
                 addElement = false;
             }
@@ -327,7 +328,7 @@ int compiler(int i) {
 
     //adds all constants to list
     if (isdigit(tokens[i].at(0))) {
-        for (int j = 0; j < constants.size(); j++) {
+        for (int j = 0; j < (int)constants.size(); j++) {
             if (constants[j] == tokens[i]) {
                 addElement = false;
             }
@@ -340,7 +341,7 @@ int compiler(int i) {
 
     //Adds all operators to operator list
     if (isOperator(tokens[i])) {
-        for (int j = 0; j < operators.size(); j++) {
+        for (int j = 0; j < (int)operators.size(); j++) {
             if (operators[j] == tokens[i]) {
                 addElement = false;
             }
@@ -353,7 +354,7 @@ int compiler(int i) {
 
     //adds all delimiters to delimiter list
     if (isDelimiter(tokens[i].at(0))) {
-        for (int j = 0; j < delimiters.size(); j++) {
+        for (int j = 0; j < (int)delimiters.size(); j++) {
             if (delimiters[j] == tokens[i]) {
                 addElement = false;
             }
@@ -449,19 +450,20 @@ int main() {
 
     else {
         cout << "no input file available";
+        return 0;
     }
 
     /*
      * end writing file to tokens vector
      */
 
-    for (int i = 0; i < codeVector.size(); i++){
+    for (int i = 0; i < (int)codeVector.size(); i++){
         code += codeVector[i];
     }
 
     findTokens(code);
 
-    for (int i = 0; i < tokens.size(); i++) {
+    for (int i = 0; i < (int)tokens.size(); i++) {
         beginWithoutEnd += compiler(i);
     }
 
@@ -474,30 +476,30 @@ int main() {
         cout << "\n" << callStack.pop();
     }*/
 
-    cout << "The depth of nested loop(s) is " << findDepthOfNestedLoops();
+    cout << endl << "The depth of nested loop(s) is " << findDepthOfNestedLoops();
 
     cout << "\n" << "\n" << "Keywords: ";
-    for (int i = 0; i < keywords.size(); i++){
+    for (int i = 0; i < (int)keywords.size(); i++){
         cout << keywords[i] << " ";
     }
 
     cout << "\n " << "Identifier: ";
-    for (int i = 0; i < identifiers.size(); i++){
+    for (int i = 0; i < (int)identifiers.size(); i++){
         cout << identifiers[i] << " ";
     }
 
     cout << "\n " << "Constant: ";
-    for (int i = 0; i < constants.size(); i++){
+    for (int i = 0; i < (int)constants.size(); i++){
         cout << constants[i] << " ";
     }
 
     cout << "\n " << "Operators: ";
-    for (int i = 0; i < operators.size(); i++){
+    for (int i = 0; i < (int)operators.size(); i++){
         cout << operators[i] << " ";
     }
 
     cout << "\n " << "Delimiter: ";
-    for (int i = 0; i < delimiters.size(); i++){
+    for (int i = 0; i < (int)delimiters.size(); i++){
         cout << delimiters[i] << " ";
     }
 
@@ -508,13 +510,13 @@ int main() {
     }
 
     else {
-        for (int i = 0; i < syntaxErrors.size(); i++) {
+        for (int i = 0; i < (int)syntaxErrors.size(); i++) {
             cout << syntaxErrors[i] << " ";
         }
     }
 
     /*cout << "\n"; //FIXME delete before submission
-    for (int i = 0; i < tokens.size(); i++) {
+    for (int i = 0; i < (int)tokens.size(); i++) {
         cout << tokens[i] << "\n";
     }*/
 
