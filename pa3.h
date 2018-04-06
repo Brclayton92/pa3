@@ -32,7 +32,9 @@ void findTokens(string code);
 bool isWhiteSpace(char a);
 bool isLowerCaseLetter(char b);
 void compiler(int i);
-bool isOperator(char c);
+bool isOperator(string str);
+bool isKeyword(string str);
+bool isDelimiter(char d);
 
 
 #endif //PA3_PA3_H

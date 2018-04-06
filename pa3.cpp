@@ -214,24 +214,48 @@ bool isLowerCaseLetter(char b) {
     }
 }
 
-bool isOperator(char c) {
-    if (c == '+'){
+bool isOperator(string c) {
+    if (c == "+"){
         return true;
     }
 
-    if (c == '-') {
+    if (c == "-") {
         return true;
     }
 
-    if (c == '*') {
+    if (c == "*") {
         return true;
     }
 
-    if (c == '/'){
+    if (c == "/"){
         return true;
     }
 
-    if (c == '='){
+    if (c == "="){
+        return true;
+    }
+
+    if (c == "++")
+
+    return false;
+}
+
+bool isKeyword(string str) {
+    if (str == "FOR" || str == "BEGIN" || str == "END"){
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+bool isDelimiter(char d) {
+    if (d == ';'){
+        return true;
+    }
+
+    if (d == ',') {
         return true;
     }
 
@@ -239,12 +263,12 @@ bool isOperator(char c) {
 }
 
 void compiler(int i) {
-
+    bool addElement = true;
     /*
      * FOR keyword branch start
      */
     if (tokens[i] == "FOR") {
-        keywords.push_back(tokens[i]);
+        //keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
             cout << "inside (";
             syntaxErrors.push_back(tokens[i+1]);
@@ -252,7 +276,7 @@ void compiler(int i) {
 
         if (tokens[i + 1] == "(") {
             if (isLowerCaseLetter(tokens[i + 2].at(0))) {
-                identifiers.push_back(tokens[i + 2]);
+                //identifiers.push_back(tokens[i + 2]);
             }
 
             else {
@@ -262,7 +286,7 @@ void compiler(int i) {
 
         if (isLowerCaseLetter(tokens[i + 2].at(0))) {
             if (tokens[i + 3] == ","){
-                delimiters.push_back(tokens[i + 3]);
+               // delimiters.push_back(tokens[i + 3]);
             }
 
             else {
@@ -272,7 +296,7 @@ void compiler(int i) {
 
         if (tokens[i + 3] == ",") {
             if (isdigit(tokens[i + 4].at(0))) {
-                constants.push_back(tokens[i + 4]);
+                //constants.push_back(tokens[i + 4]);
             }
 
             else {
@@ -282,7 +306,7 @@ void compiler(int i) {
 
         if (isdigit(tokens[i + 4].at(0))){
             if (tokens[i + 5] == ",") {
-                delimiters.push_back(tokens[i + 5]);
+               // delimiters.push_back(tokens[i + 5]);
             }
 
             else {
@@ -292,7 +316,7 @@ void compiler(int i) {
 
         if (tokens[i + 5] == ",") {
             if (tokens[i + 6] == "++"){
-                operators.push_back(tokens[i + 6]);
+               // operators.push_back(tokens[i + 6]);
             }
 
             else {
@@ -308,7 +332,7 @@ void compiler(int i) {
 
         if (tokens[i + 7] == ")") {
             if (tokens[i + 8] == "BEGIN"){
-                keywords.push_back(tokens[i + 8]);
+                //keywords.push_back(tokens[i + 8]);
             }
 
             else {
@@ -320,15 +344,84 @@ void compiler(int i) {
      * FOR keyword branch end
      */
 
-    /*
-     * Operators branch start
-     */
-    if (isOperator(tokens[i].at(0))) {
+    //Adds mispelled keywords to syntax errors list
+    if (isupper(tokens[i].at(0)) && !isKeyword(tokens[i])){
+        for (int j = 0; j < keywords.size(); j++){
+            if (syntaxErrors[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
 
+        if (addElement) {
+            syntaxErrors.push_back(tokens[i]);
+        }
     }
+
+    //adds keywords to keywords list
+    if (isKeyword(tokens[i])) {
+        for (int j = 0; j < keywords.size(); j++){
+            if (keywords[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
+
+        if (addElement) {
+            keywords.push_back(tokens[i]);
+        }
+    }
+
+    // adds all identifiers to list
+    if (isLowerCaseLetter(tokens[i].at(0))) {
+        for (int j = 0; j < identifiers.size(); j++){
+            if (identifiers[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
+
+        if (addElement) {
+            identifiers.push_back(tokens[i]);
+        }
+    }
+
+    //adds all constants to list
+    if (isdigit(tokens[i].at(0))) {
+        for (int j = 0; j < constants.size(); j++) {
+            if (constants[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
+
+        if (addElement) {
+            constants.push_back(tokens[i]);
+        }
+    }
+
+    if (isOperator(tokens[i])) {
+        for (int j = 0; j < operators.size(); j++) {
+            if (operators[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
+
+        if (addElement) {
+            operators.push_back(tokens[i]);
+        }
+    }
+
+    if (isDelimiter(tokens[i].at(0))) {
+        for (int j = 0; j < delimiters.size(); j++) {
+            if (delimiters[j] == tokens[i]) {
+                addElement = false;
+            }
+        }
+
+        if (addElement) {
+            delimiters.push_back(tokens[i]);
+        }
+    }
+
+    addElement = true;
 }
-
-
 
 
 /*
