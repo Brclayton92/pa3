@@ -229,78 +229,63 @@ bool isDelimiter(char d) {
 
 //iterates through vector array of tokens adding them to appropriate categories (keywords, operaters, etc...)
 int compiler(int i) {
-    int beginOrEndCounter = 0; //
-    bool addElement = true;
+    int beginOrEndCounter = 0; // value to be returned, stores 1 if current token is BEGIN and -1 if current token is END
+    bool addElement = true; // boolean used to avoid duplicate entires into various token classification arrays
     /*
      * FOR keyword branch start: ensures tokens following keyword FOR match expected values, if not, adds them to syntax errors vector.
      */
     if (tokens[i] == "FOR") {
+
+        // if "(" doesn't follow "FOR", adds whatever token follows "FOR" to syntax errors vector
         if (tokens[i + 1] != "("){
             syntaxErrors.push_back(tokens[i+1]);
         }
 
+        // if "identifier" doesn't follow "(", adds whatever token follows "(" to syntax errors vector
         if (tokens[i + 1] == "(") {
-            if (isLowerCaseLetter(tokens[i + 2].at(0))) {
-                //identifiers.push_back(tokens[i + 2]);
-            }
-
-            else {
+            if (!isLowerCaseLetter(tokens[i + 2].at(0))) {
                 syntaxErrors.push_back(tokens[i + 2]);
             }
         }
 
+        // if "," doesn't follow "(" and "identifier", adds whatever token follows "(" and "identifier" to syntax errors vector
         if (isLowerCaseLetter(tokens[i + 2].at(0))) {
-            if (tokens[i + 3] == ","){
-                // delimiters.push_back(tokens[i + 3]);
-            }
-
-            else {
+            if (!(tokens[i + 3] == ",")) {
                 syntaxErrors.push_back(tokens[i + 3]);
             }
         }
 
+        //if "digit" doesnt follow "identifier" and "," adds whatever follows identifier and "," to syntax errors vector
         if (tokens[i + 3] == ",") {
-            if (isdigit(tokens[i + 4].at(0))) {
-                //constants.push_back(tokens[i + 4]);
-            }
-
-            else {
+            if (!isdigit(tokens[i + 4].at(0))) {
                 syntaxErrors.push_back(tokens[i + 4]);
             }
         }
 
+        //if "," doesnt follow "," and "digit" adds whatever follows ","  and "digit" to syntax errors vector
         if (isdigit(tokens[i + 4].at(0))){
-            if (tokens[i + 5] == ",") {
-                // delimiters.push_back(tokens[i + 5]);
-            }
-
-            else {
+            if (!(tokens[i + 5] == ",")) {
                 syntaxErrors.push_back(tokens[i + 5]);
             }
         }
 
+        //if "++" doesnt follow "digit" and "," adds whatever follows "digit" and "," to syntax errors vector
         if (tokens[i + 5] == ",") {
-            if (tokens[i + 6] == "++"){
-                // operators.push_back(tokens[i + 6]);
-            }
-
-            else {
+            if (!(tokens[i + 6] == "++")) {
                 syntaxErrors.push_back(tokens[i + 6]);
             }
         }
 
+        // if ")" doesnt follow "," and "++", adds whatever follows  "," and "++" to syntax errors vector
         if (tokens[i + 6] == "++") {
             if (tokens[i + 7] != ")") {
                 syntaxErrors.push_back(tokens[i + 7]);
             }
         }
 
+        // if BEGIN doesnt follow "++" and ")", adds whatever follows "++" and ")" to syntax errors vector
         if (tokens[i + 7] == ")") {
-            if (tokens[i + 8] == "BEGIN"){
-                //keywords.push_back(tokens[i + 8]);
-            }
-
-            else {
+            if (!(tokens[i + 8] == "BEGIN")) {
                 syntaxErrors.push_back(tokens[i + 8]);
             }
         }
@@ -312,6 +297,8 @@ int compiler(int i) {
     //Adds misspelled keywords to syntax errors list
     if (isupper(tokens[i].at(0)) && !isKeyword(tokens[i])){
         for (int j = 0; j < (int) keywords.size(); j++){
+
+            //
             if (syntaxErrors[j] == tokens[i]) {
                 addElement = false;
             }
@@ -325,6 +312,7 @@ int compiler(int i) {
     //adds keywords to keywords list
     if (isKeyword(tokens[i])) {
         for (int j = 0; j < (int)keywords.size(); j++){
+            //if statement prevents duplicates in token classification vectors
             if (keywords[j] == tokens[i]) {
                 addElement = false;
             }
@@ -338,6 +326,7 @@ int compiler(int i) {
     // adds all identifiers to list
     if (isLowerCaseLetter(tokens[i].at(0))) {
         for (int j = 0; j < (int)identifiers.size(); j++){
+            //if statement prevents duplicates in token classification vectors
             if (identifiers[j] == tokens[i]) {
                 addElement = false;
             }
@@ -351,6 +340,7 @@ int compiler(int i) {
     //adds all constants to list
     if (isdigit(tokens[i].at(0))) {
         for (int j = 0; j < (int)constants.size(); j++) {
+            //if statement prevents duplicates in token classification vectors
             if (constants[j] == tokens[i]) {
                 addElement = false;
             }
@@ -364,6 +354,7 @@ int compiler(int i) {
     //Adds all operators to operator list
     if (isOperator(tokens[i])) {
         for (int j = 0; j < (int)operators.size(); j++) {
+            //if statement prevents duplicates in token classification vectors
             if (operators[j] == tokens[i]) {
                 addElement = false;
             }
@@ -377,6 +368,7 @@ int compiler(int i) {
     //adds all delimiters to delimiter list
     if (isDelimiter(tokens[i].at(0))) {
         for (int j = 0; j < (int)delimiters.size(); j++) {
+            //if statement prevents duplicates in token classification vectors
             if (delimiters[j] == tokens[i]) {
                 addElement = false;
             }
@@ -390,7 +382,7 @@ int compiler(int i) {
     addElement = true;
 
     /*
-     * Checks for begin without end
+     * Checks for begin without end : if current token is BEGIN returns 1. if current Token is END returns negative 1
      */
     if (tokens[i] == "BEGIN") {
         beginOrEndCounter = 1;
@@ -401,31 +393,39 @@ int compiler(int i) {
         beginOrEndCounter = -1;
         callStack.push(tokens[i]);
     }
+
+    return beginOrEndCounter;
     /*
      *
      */
-    return beginOrEndCounter;
 }
 
+// finds depth of deepest nested loop and returns it
 int findDepthOfNestedLoops() {
-    int loopCounter = 0;
-    int numLoops = 0;
-    bool countBegins = false;
+    int loopCounter = 0; // tracks depth of current loop
+    int numLoops = 0;   // holds int value of deepest nested loop
+    bool countBegins = false; // loop counter doesn't start counting until countBegins is true
     const int NUM_STACK_ELEMENTS = callStack.getSize();
     string tempCallStack[NUM_STACK_ELEMENTS];
 
     for (int i = 0; i < NUM_STACK_ELEMENTS; i++){
         tempCallStack[i] = callStack.pop();
     }
+
+
     for (int i = 0; i < NUM_STACK_ELEMENTS; i++) {
         if (tempCallStack[i] == "END") {
-            countBegins = true;
+            countBegins = true; // When element containing END is encountered, loopCounter is allowed to start incrementing
+
+            // if current loopCounter value is greater than current value in numLoops, sets numLoops = loopCounter
             if (loopCounter > numLoops) {
                 numLoops = loopCounter;
             }
+            // resets loop counter when end is encountered
             loopCounter = 0;
         }
 
+        // increments loopCounter for every begin encountered after the first END is encountered
         if (tempCallStack[i] == "BEGIN"){
             if (countBegins){
                 loopCounter++;
@@ -433,6 +433,7 @@ int findDepthOfNestedLoops() {
         }
     }
 
+    // final check to ensure numLoops is greater than current loop counter
     if (loopCounter > numLoops) {
         numLoops = loopCounter;
     }
@@ -446,7 +447,7 @@ int findDepthOfNestedLoops() {
  */
 
 int main() {
-    string str;
+    string str; // temp string used to extract from file
     string code = "";
     vector <string> codeVector;
     int beginWithoutEnd = 0;
@@ -489,14 +490,10 @@ int main() {
         beginWithoutEnd += compiler(i);
     }
 
+    // if begin without end is positive, compiler found more BEGINs than ENDs
     if (beginWithoutEnd > 0) {
         syntaxErrors.push_back("END");
     }
-
-    /*while (callStack.getSize() > 0) //FIXME delete before submission
-    {
-        cout << "\n" << callStack.pop();
-    }*/
 
     cout << endl << "The depth of nested loop(s) is " << findDepthOfNestedLoops();
 
@@ -536,11 +533,6 @@ int main() {
             cout << syntaxErrors[i] << " ";
         }
     }
-
-    /*cout << "\n"; //FIXME delete before submission
-    for (int i = 0; i < (int)tokens.size(); i++) {
-        cout << tokens[i] << "\n";
-    }*/
 
     return 0;
 }
