@@ -27,8 +27,6 @@ class Stack {
         int getSize();
 };
 
-int depthOfNestedLoops(Stack _callStack);
-//void keywordsMethod(Stack _callStack, vector <string> *syntaxErrors);
 void findTokens(string code);
 bool isWhiteSpace(char a);
 bool isLowerCaseLetter(char b);

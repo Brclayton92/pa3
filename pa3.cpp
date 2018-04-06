@@ -5,18 +5,19 @@
 
 using namespace std;
 
-vector <string> tokens;
-vector <string> keywords;
-vector <string> identifiers;
-vector <string> constants;
-vector <string> operators;
-vector <string> delimiters;
-vector <string> syntaxErrors;
-Stack callStack;
+vector <string> tokens; // stores all tokens that are found in input file for analysis
+vector <string> keywords; // stores keyword tokens that are found
+vector <string> identifiers; //stores identifiers that are found
+vector <string> constants; // stores constants that are found
+vector <string> operators; // stores operators that are found
+vector <string> delimiters; //stores delimiters that are found
+vector <string> syntaxErrors; // stores syntax errors that are found
+Stack callStack; // stores BEGIN and END keywords that are found to track depth of nester loops
 
 /*
  * Stack methods start
  */
+
 
 //Stack constructor
 Stack::Stack() {
@@ -46,7 +47,7 @@ void Stack::push(string _data) {
     size++;
 }
 
-//returns data stored in tail then deletes tail it from the Stack
+//returns data stored in top of stack then deletes top item from the Stack
 string Stack::pop() { //FIXME: crashes program when called with no nodes in the stack
     node *temp = head;
     string data = tail->data;
@@ -65,6 +66,7 @@ string Stack::pop() { //FIXME: crashes program when called with no nodes in the 
     return data;
 }
 
+// returns number of elements in stack
 int Stack::getSize() {
     return size;
 }
@@ -75,64 +77,80 @@ int Stack::getSize() {
  */
 
 
-
-
 /*
  * main methods begin
  */
 
-
+// takes a string containing code input and stores each token into it's own element of a vector
 void findTokens(string code) {
-    string lastWord = "";
-    string currWord = "";
-    //vector <string> tokens; //FIXME extra vector created for debugging because debugger can't track global variables.
+    string lastWord = ""; // temp variable that stores contents of currWord when a new token is encountered
+    string currWord = ""; //Stores string of current token until a new token is encountered
+
+    // iterates through each character of a string of code
     for (int i = 0; i < (int)code.size(); i++){
+        // checks if element is an operator, delimiter, or parenthesis. If it is one of these, adds contents of currWord string to vector of tokens
         if (code.at(i) == '(' || code.at(i) == ')' || code.at(i) == '+' || code.at(i) == '-' || code.at(i) == '*' || code.at(i) == '/' || code.at(i) == '='
             || code.at(i) == ',' || code.at(i) == ';' ) {
             lastWord = currWord;
             currWord = code.at(i);
+
+            // if statement prevents empty string from being placed into token vector
             if (lastWord != "") {
                 tokens.push_back(lastWord);
             }
+
+            // special case for preventing "+" from being added to token list when token is actually "++"
             if (code.at(i + 1) != '+') {
+                // if statement prevents empty string from being placed into token vector
                 if (currWord != "") {
                     tokens.push_back(currWord);
                 }
             }
 
+            // special case for preventing "+" from being added to token list when token is actually "++"
             else {
                 tokens.push_back("++");
                 i++;
             }
+
+            // resets currWord and lastWord to prepare them to store next tokens
             currWord = "";
             lastWord = "";
         }
 
+        // tests if characer is lower case. If it is, concatinates it onto currWord sting to eventually be stored in token vector as identifier.
         else if (isLowerCaseLetter(code.at(i))) {
             currWord += code.at(i);
 
         }
 
+        // checks if character is new line. If it is, stores contents of currWord on tokens vector
         else if (code.at(i) == '\n') {
             if (currWord != "") {
                 tokens.push_back(currWord);
             }
+
+            // resets currWord to prepare it to store next token
             currWord = "";
         }
-
+        // checks if current character is white space. If it is, adds contents of currWord to tokens vector
         else if (isWhiteSpace(code.at(i))) {
             if (currWord != "") {
                 tokens.push_back(currWord);
             }
+
+            // resets currWord to prepare it to store next token
             currWord = "";
         }
 
+        // if character reaches this statement, it must be a capitol letter. stores character to currWord to eventually be stored into token vector
         else {
             currWord += code.at(i);
         }
     }
 }
 
+// method that returns true if passed in characer is white space, false otherwise
 bool isWhiteSpace(char a) {
     const int asciiVal = (int) a;
     if (asciiVal == 32) {
@@ -144,6 +162,7 @@ bool isWhiteSpace(char a) {
     }
 }
 
+// method that returns true if ascii value of passed in character is within ascii range for lowercase letters, false otherwise
 bool isLowerCaseLetter(char b) {
     const int asciiVal = (int) b;
     if ((asciiVal > 96) && (asciiVal < 123)){
@@ -155,6 +174,7 @@ bool isLowerCaseLetter(char b) {
     }
 }
 
+// returns true if passed string is "+", "-", "*", "/", or "++". False otherwise.
 bool isOperator(string c) {
     if (c == "+"){
         return true;
@@ -183,6 +203,7 @@ bool isOperator(string c) {
     return false;
 }
 
+//returns true if passed in string is "FOR", "BEGIN", or "END". returns false otherwise
 bool isKeyword(string str) {
     if (str == "FOR" || str == "BEGIN" || str == "END"){
         return true;
@@ -193,6 +214,7 @@ bool isKeyword(string str) {
     }
 }
 
+//returns true if passed in character is "," or ";", false otherwise.
 bool isDelimiter(char d) {
     if (d == ';'){
         return true;
@@ -205,6 +227,7 @@ bool isDelimiter(char d) {
     return false;
 }
 
+//iterates through vector array of tokens adding them to appropriate categories (keywords, operaters, etc...)
 int compiler(int i) {
     int beginOrEndCounter = 0;
     bool addElement = true;
@@ -214,7 +237,6 @@ int compiler(int i) {
     if (tokens[i] == "FOR") {
         //keywords.push_back(tokens[i]);
         if (tokens[i + 1] != "("){
-            cout << "inside (";
             syntaxErrors.push_back(tokens[i+1]);
         }
 
@@ -288,7 +310,7 @@ int compiler(int i) {
      * FOR keyword branch end
      */
 
-    //Adds mispelled keywords to syntax errors list
+    //Adds misspelled keywords to syntax errors list
     if (isupper(tokens[i].at(0)) && !isKeyword(tokens[i])){
         for (int j = 0; j < (int) keywords.size(); j++){
             if (syntaxErrors[j] == tokens[i]) {
@@ -450,7 +472,7 @@ int main() {
     }
 
     else {
-        cout << "no input file available";
+        cout << "No input file available. Ensure filename matches input.";
         return 0;
     }
 
