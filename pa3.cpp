@@ -427,13 +427,18 @@ int main() {
     string code = "";
     vector <string> codeVector;
     int beginWithoutEnd = 0;
+    string inputFileName;
+
+    cout << "Please enter the name of the input file:";
+
+    cin >> inputFileName;
 
 
     /*
      * write file to tokens vector
      */
 
-    ifstream infile("code.txt", ios::in); // test.text must be located in "C:\Users\Brock\CLionProjects\projectName\cmake-build-debug"
+    ifstream infile(inputFileName, ios::in); // test.text must be located in "C:\Users\Brock\CLionProjects\projectName\cmake-build-debug"
 
     if (infile.is_open()){
         while (getline(infile, str)) { // returns null when it reaches an empty line in the file
