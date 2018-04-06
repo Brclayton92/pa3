@@ -1,7 +1,7 @@
 #include <iostream>
 #include "pa3.h"
 #include <fstream>
-#include <vector>
+#include "vector"
 
 using namespace std;
 
@@ -396,6 +396,7 @@ void compiler(int i) {
         }
     }
 
+    //Adds all operators to operator list
     if (isOperator(tokens[i])) {
         for (int j = 0; j < operators.size(); j++) {
             if (operators[j] == tokens[i]) {
@@ -408,6 +409,7 @@ void compiler(int i) {
         }
     }
 
+    //adds all delimiters to delimiter list
     if (isDelimiter(tokens[i].at(0))) {
         for (int j = 0; j < delimiters.size(); j++) {
             if (delimiters[j] == tokens[i]) {
@@ -433,6 +435,7 @@ int main() {
     string str;
     string code = "";
     vector <string> codeVector;
+    int beginWithoutEnd = 0;
 
 
     /*
